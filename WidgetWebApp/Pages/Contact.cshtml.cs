@@ -12,7 +12,7 @@ namespace WidgetWebApp.Pages
 
         public void OnGet()
         {
-            Message = "Your contact page.";
+            Message = "Questions? Comments?";
         }
     }
 }
