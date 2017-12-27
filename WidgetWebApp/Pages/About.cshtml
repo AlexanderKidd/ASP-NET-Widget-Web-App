@@ -3,16 +3,22 @@
 @{
     ViewData["Title"] = "About";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@Model.Message</h3>
+<div class="static-page-content">
+    <h2>@ViewData["Title"]</h2>
+    <h3>@Model.Message</h3>
 
-<p> This is a web application demonstrating ASP.NET's new Razor Pages.
-    <br />
-    The theme of this site is widgets, which are fictitious gadgets, although they can generate massive hype (real or not).
-</p>
 
-<p>It also uses the following deployment flow:</p>
+    <p>
+        This is a web application demonstrating ASP.NET's new Razor Pages.
+        <br />
+        The theme of this site is widgets, which are fictitious gadgets, although they can generate massive hype (real or not).
+        <br />
+        Free-to-use pictures courtesy of <a href="https://pixabay.com">pixabay.com</a>
+    </p>
 
-<p>
-    <b>Code in Visual Studio &#8594; Push to GitHub &#8594; Automatic CI deployment on Microsoft Azure</b>
-</p>
+    <p>It also uses the following deployment flow:</p>
+
+    <p>
+        <b>Code in Visual Studio &#8594; Push to GitHub &#8594; Automatic CI deployment on Microsoft Azure</b>
+    </p>
+</div>
