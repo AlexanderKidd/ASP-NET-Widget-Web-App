@@ -306,3 +306,8 @@ body.is-mobile.home #footer {
 .static-page-content {
     color: #4ab9e4;
 }
+
+/* Set to baseline */
+.scrollVertBaseline {
+    bottom: 30px !important;
+}
