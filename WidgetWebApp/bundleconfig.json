@@ -10,6 +10,19 @@
     ]
   },
   {
+    "outputFileName": "wwwroot/js/contact.min.js",
+    "inputFiles": [
+      "wwwroot/js/contact.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  },
+  {
     "outputFileName": "wwwroot/js/util.min.js",
     "inputFiles": [
       "wwwroot/js/util.js"
