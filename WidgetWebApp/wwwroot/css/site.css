@@ -414,6 +414,10 @@ input:checked + .slider:before {
     outline: none;
 }
 
+.square.highlight {
+    background: yellow;
+}
+
 .kbd-navigation .square:focus {
     background: #ddd;
 }
