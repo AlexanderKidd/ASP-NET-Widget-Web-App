@@ -21,27 +21,103 @@
     }
 
     class Board extends React.Component {
+        render() {
+            return (
+                <div>
+                    <div className="board-row">
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(0)} value={this.props.squares[0]} onClick={() => this.props.onClick(0)} />
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(1)} value={this.props.squares[1]} onClick={() => this.props.onClick(1)} />
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(2)} value={this.props.squares[2]} onClick={() => this.props.onClick(2)} />
+                    </div>
+                    <div className="board-row">
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(3)} value={this.props.squares[3]} onClick={() => this.props.onClick(3)} />
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(4)} value={this.props.squares[4]} onClick={() => this.props.onClick(4)} />
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(5)} value={this.props.squares[5]} onClick={() => this.props.onClick(5)} />
+                    </div>
+                    <div className="board-row">
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(6)} value={this.props.squares[6]} onClick={() => this.props.onClick(6)} />
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(7)} value={this.props.squares[7]} onClick={() => this.props.onClick(7)} />
+                        <Square highlight={this.props.winningRow && this.props.winningRow.includes(8)} value={this.props.squares[8]} onClick={() => this.props.onClick(8)} />
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    class Game extends React.Component {
         constructor(props) {
             super(props);
             this.state = {
                 squares: Array(9).fill(null),
                 xIsNext: true,
+                moveCount: 0,
             };
         }
 
         handleClick(i) {
+            if(this.state.xIsNext) {
+                this.setSquare(i);
+                this.botMove(i);
+            }
+        }
+
+        setSquare(i) {
             const squares = this.state.squares.slice();
             
             if (calculateWinner(squares) || squares[i]) {
-              return;
+                return;
             }
 
             squares[i] = this.state.xIsNext ? 'X' : 'O';
 
             this.setState({
-              squares: squares,
-              xIsNext: !this.state.xIsNext,
+                squares: squares,
+                xIsNext: !this.state.xIsNext,
+                moveCount: ++this.state.moveCount,
             });
+        }
+
+        botMove(playerMove) {
+            const squares = this.state.squares.slice();
+
+            setTimeout(function() {
+                if(!this.isAvailable || this.state.moveCount == 9) return;
+                
+                let rand = 0;
+                do {
+                    rand = Math.floor(Math.random() * Math.floor(8));
+                    console.log("player" + playerMove);
+                    console.log("rand" + rand);
+                }    
+                while((squares[rand] != null || rand == playerMove) && this.isAvailable);
+                console.log("clear");
+                this.setSquare(rand);
+            }.bind(this),2000);
+        }
+
+        isAvailable()
+        {
+            let i = 0;
+    
+            for(i = 0; i < 9; i++) {
+                if(this.state.squares.slice()[i] == null) {
+                    break;
+                }
+
+                if(i == 9) return false;
+            }
+            
+            return true;
+        }
+        
+        newGame() {
+            this.setState({
+                squares: Array(9).fill(null),
+                xIsNext: true,
+                moveCount: 0,
+            });
+
+            // TODO: Memoize history arrays, evaluate moves.
         }
 
         render() {
@@ -50,51 +126,38 @@
 
             let status;
 
-            if (winPlayer) {
-              if(winPlayer == 'O') {
+            if (winningRow == -1) {
+                status = 'Tie!';
+            }
+            else if(winningRow != null) {
+              if(this.state.squares[winningRow[0]] == 'O') {
                 status = 'Fido wins!';
               }
               else {
-                status = winPlayer + ' wins!';
+                status = 'You win!';
               }
             } 
             else {
-              status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'FidO');
+              status = 'Next player: ' + (this.state.xIsNext ? 'You' : 'FidO');
             }
 
             return (
-                <div>
-                    <div className="status">{status}</div>
-                    <div className="board-row">
-                        <Square highlight={winningRow && winningRow.includes(0)} value={this.state.squares[0]} onClick={() => this.handleClick(0)} />
-                        <Square highlight={winningRow && winningRow.includes(1)} value={this.state.squares[1]} onClick={() => this.handleClick(1)} />
-                        <Square highlight={winningRow && winningRow.includes(2)} value={this.state.squares[2]} onClick={() => this.handleClick(2)} />
-                    </div>
-                    <div className="board-row">
-                        <Square highlight={winningRow && winningRow.includes(3)} value={this.state.squares[3]} onClick={() => this.handleClick(3)} />
-                        <Square highlight={winningRow && winningRow.includes(4)} value={this.state.squares[4]} onClick={() => this.handleClick(4)} />
-                        <Square highlight={winningRow && winningRow.includes(5)} value={this.state.squares[5]} onClick={() => this.handleClick(5)} />
-                    </div>
-                    <div className="board-row">
-                        <Square highlight={winningRow && winningRow.includes(6)} value={this.state.squares[6]} onClick={() => this.handleClick(6)} />
-                        <Square highlight={winningRow && winningRow.includes(7)} value={this.state.squares[7]} onClick={() => this.handleClick(7)} />
-                        <Square highlight={winningRow && winningRow.includes(8)} value={this.state.squares[8]} onClick={() => this.handleClick(8)} />
-                    </div>
-                </div>
-            );
-        }
-    }
-
-    class Game extends React.Component {
-        render() {
-            return (
                 <div className="game">
-                    <div className="game-board">
-                        <Board />
-                    </div>
                     <div className="game-info">
-                        <div>{/* status */}</div>
-                        <ol>{/* TODO */}</ol>
+                        <div>{ status }</div>
+                    </div>
+
+                    <div>
+                        <div className="game-board">
+                            <Board 
+                                squares={this.state.squares}
+                                onClick={(i) => this.handleClick(i)}
+                            />
+                        </div>
+
+                        <br/>
+
+                        <button onClick={ () => this.newGame() }>New Game</button>
                     </div>
                 </div>
             );

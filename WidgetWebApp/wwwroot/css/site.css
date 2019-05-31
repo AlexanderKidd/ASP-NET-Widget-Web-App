@@ -424,9 +424,6 @@ input:checked + .slider:before {
 
 .game {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
-.game-info {
-    margin-left: 20px;
-}
