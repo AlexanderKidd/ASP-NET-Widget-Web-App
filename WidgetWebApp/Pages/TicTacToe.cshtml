@@ -4,13 +4,32 @@
 }
 
 <div class="static-page-content">
-    <h2>Tic-Tac-Fido</h2>
+    <h2>Tic-Tac-FidO</h2>
+    <div>
+        <p>
+            Train FidO by playing multiple games. (Do not refresh the page!)
+        </p>
+        <p>
+            Give him a treat when he does something correct like blocking your three-in-a-row.
+        </p>
+        <p>
+            Make this an app by visiting this page in a mobile web browser and clicking "Add To Homescreen".
+        </p>
+    </div>
+    <br />
     <div id="gameRoot"></div>
 </div>
 
 <script type="text/babel">
     const learnRate = 0.5;
     const discRate = 0.01;
+
+    const imagesPath = {
+        idle: "/images/fido_idle.gif",
+        treat: "/images/fido_treat.gif",
+        lose: "/images/fido_lose.gif",
+        win: "/images/fido_win.gif",
+    }
 
     class Square extends React.Component {
         render() {
@@ -61,6 +80,7 @@
                 xIsNext: true,
                 moveCount: 0,
                 lastMove: [],
+                treatMove: null,
                 disableClick: false,
                 winningRow: null,
             };
@@ -128,6 +148,10 @@
                 this.setSquare(moveIndex);
             }.bind(this), 2000);
         }
+
+        giveTreat() {
+            this.setState({treatMove: this.state.squares});
+        }
         
         newGame() {
             // Because we lifted state up to Game component, resetting state should propagate to Board and Squares.
@@ -143,6 +167,7 @@
                     xIsNext: true,
                     moveCount: 0,
                     lastMove: [],
+                    treatMove: null,
                     disableClick: false,
                     winningRow: null,
                 });
@@ -160,6 +185,9 @@
             do {
 
                 let serializedBoard = this.serializeBoard(currentBoard);
+                let treatBoard = this.state.treatMove ? this.serializeBoard(this.state.treatMove) : null;
+
+                if(treatBoard == serializedBoard) botReward = 1;
 
                 if(serializedBoard[currentMove] == 'O') {
                     let boardCopy = Array(9).fill(0);
@@ -201,18 +229,24 @@
         render() {
             const winningRow = this.state.winningRow;
             const winPlayer = winningRow == null ? null : winningRow[0];
+            let imageName = imagesPath['idle'];
+
+            if(this.state.treatMove) imageName = imagesPath['treat'];
 
             let status;
 
             if (winningRow == -1) {
                 status = 'It\'s a Tie!';
+                imageName = imagesPath['lose'];
             }
             else if(winningRow != null) {
               if(this.state.squares[winningRow[0]] == 'O') {
                 status = 'Fido wins!';
+                imageName = imagesPath['win'];
               }
               else {
                 status = 'You win!';
+                imageName = imagesPath['lose'];
               }
             } 
             else {
@@ -220,23 +254,30 @@
             }
 
             return (
-                <div className="game">
-                    <div className="game-info">
-                        <div>{ status }</div>
+                <div className="game container-fluid">
+                    <div className="row">
+                        <div className="status col-xs-4 col-sm-4 col-md-4 col-lg-4">{ status }</div>
                     </div>
-
-                    <div>
-                        <div className="game-board">
-                            <Board 
-                                squares={this.state.squares}
-                                onClick={(i) => this.handleClick(i)}
+                    
+                    <div className="row form-group">
+                        <div className="game-board col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <Board squares={this.state.squares}
+                                    onClick={(i) =>
+                                this.handleClick(i)}
                                 winningRow={this.state.winningRow}
-                            />
+                                />                         
                         </div>
-
-                        <br/>
-
-                        <button onClick={ () => this.newGame() }>New Game</button>
+                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <img className="fidO-image" src={imageName} alt="FidO" height="300" width="300"></img>
+                        </div>
+                    </div>
+                    <div className="row form-group">
+                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <button onClick={ ()=> this.newGame() }>New Game</button>
+                        </div>
+                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <button disabled={this.state.treatMove} onClick={ ()=> this.giveTreat() }>Give Treat 🦴</button>
+                        </div>
                     </div>
                 </div>
             );

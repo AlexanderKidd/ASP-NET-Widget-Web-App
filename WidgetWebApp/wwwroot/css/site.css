@@ -392,6 +392,8 @@ input:checked + .slider:before {
 }
 
 .status {
+    color: #97d0d4;
+    font-weight: bold;
     margin-bottom: 10px;
 }
 
@@ -402,12 +404,12 @@ input:checked + .slider:before {
     font-size: 24px;
     font-weight: bold;
     line-height: 34px;
-    height: 34px;
+    height: 100px;
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 34px;
+    width: 100px;
 }
 
 .square:focus {
@@ -418,12 +420,11 @@ input:checked + .slider:before {
     background: yellow;
 }
 
-.kbd-navigation .square:focus {
-    background: #ddd;
-}
-
 .game {
     display: flex;
     flex-direction: column;
 }
 
+.fidO-image {
+    background-color: white;
+}
