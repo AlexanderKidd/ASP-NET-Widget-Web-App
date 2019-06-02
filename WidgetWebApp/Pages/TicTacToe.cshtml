@@ -54,11 +54,13 @@
             super(props);
             this.state = {
                 squares: Array(9).fill(null),
-                history: [{
-                    squares: Array(9).fill(null),
-                }],
+                history: [
+                    Array(9).fill(null),
+                ],
+                memo: {},
                 xIsNext: true,
                 moveCount: 0,
+                lastMove: [],
                 disableClick: false,
                 winningRow: null,
             };
@@ -71,7 +73,7 @@
         }
 
         setSquare(i) {
-            let squares = this.state.squares.slice();
+            const squares = this.state.squares.slice();
             
             if (calculateWinner(squares) != null || squares[i] != null) {
                 return;
@@ -84,11 +86,12 @@
             
             this.setState({
                 squares: squares,
-                history: this.state.history.concat([{
-                    squares: squares,
-                }]),
+                history: this.state.history.concat([
+                    squares
+                ]),
                 xIsNext: !this.state.xIsNext,
                 moveCount: ++this.state.moveCount,
+                lastMove: this.state.lastMove.concat(i),
                 disableClick: (squares[i] != 'O'),
                 winningRow: calculateWinner(squares),
             }, nextFcn);
@@ -103,36 +106,96 @@
 
         botMove(playerMove) {
             const squares = this.state.squares.slice();
-            setTimeout(function() {
-                if(!isAvailable(squares.slice()) || this.state.moveCount == 9) return;
-                
-                let rand = 0;
-                do {
-                    rand = Math.floor(Math.random() * Math.floor(8));
-                }    
-                while((squares[rand] != null || rand == playerMove));
+            let moveIndex = 0;
 
-                this.setSquare(rand);
+            setTimeout(function() {
+                let serializedBoard = this.serializeBoard(squares.slice());
+
+                if(!(serializedBoard in this.state.memo) || (serializedBoard in this.state.memo && Math.max(...this.state.memo[serializedBoard]))) {
+                    if(!isAvailable(squares) || this.state.moveCount == 9) return;
+
+                    // Explore a random state.
+                    do {
+                        moveIndex = Math.floor(Math.random() * Math.floor(8));
+                    }    
+                    while((squares[moveIndex] != null || moveIndex == playerMove));
+                }
+                else {
+                    // Take the best (max) square based on states visited in past games.
+                    moveIndex = this.state.memo[serializedBoard].indexOf(Math.max(...this.state.memo[serializedBoard]));
+                }
+
+                this.setSquare(moveIndex);
             }.bind(this), 2000);
         }
         
         newGame() {
             // Because we lifted state up to Game component, resetting state should propagate to Board and Squares.
             if(this.state.winningRow) {
-                // TODO: Memoize history arrays, evaluate moves.
-                
-
+                let newMemo = this.evalRewards(this.state.squares[this.state.winningRow[0]] == 'O');
+                console.log(newMemo);
                 this.setState({
                     squares: Array(9).fill(null),
-                    history: [{
-                        squares: Array(9).fill(null),
-                    }],
+                    history: [
+                        Array(9).fill(null),
+                    ],
+                    memo: newMemo,
                     xIsNext: true,
                     moveCount: 0,
+                    lastMove: [],
                     disableClick: false,
                     winningRow: null,
                 });
             }
+        }
+
+        evalRewards(botWon) {
+            let botReward = botWon ? 1 : -1;
+            let currentHistory = this.state.history.slice();
+            let moveHistory = this.state.lastMove.slice();
+            let currentBoard = currentHistory.pop();
+            let currentMove = moveHistory.pop();
+            let memoCopy = JSON.parse(JSON.stringify(this.state.memo));
+
+            do {
+
+                let serializedBoard = this.serializeBoard(currentBoard);
+
+                if(serializedBoard[currentMove] == 'O') {
+                    let boardCopy = Array(9).fill(0);
+                    
+                    if(serializedBoard in memoCopy) {
+                        boardCopy = memoCopy[serializedBoard];
+                        botReward += (botReward * learnRate);
+                        boardCopy[currentMove] += botReward;
+                        memoCopy[serializedBoard] = boardCopy;
+                    }
+                    else {
+                        botReward *= learnRate;
+                        boardCopy[currentMove] = botReward;
+                        memoCopy[serializedBoard] = boardCopy;
+                    }
+                }
+                
+                // Next items
+                currentBoard = currentHistory.pop();
+                currentMove = moveHistory.pop();
+                
+                // Adjust rates
+                botReward *= discRate;
+            }
+            while(currentHistory.length > 0);
+           
+            return memoCopy;
+        }
+
+        serializeBoard(squares) {
+            let i;
+            for(i = 0; i < 9; i++) {
+                if(squares[i] == null) squares[i] = '-';
+            }
+
+            return squares.join('');
         }
 
         render() {
