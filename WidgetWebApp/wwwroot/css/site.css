@@ -273,6 +273,100 @@ body.is-mobile.home #footer {
     background-color: #1d242a;
 }
 
+.spotlight {
+    -moz-align-items: center;
+    -webkit-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+}
+
+    .spotlight .image .normal{
+        -moz-order: 1;
+        -webkit-order: 1;
+        -ms-order: 1;
+        order: 1;
+        border-radius: 0;
+        width: 40%;
+    }
+
+        .spotlight .image img {
+            border-radius: 0;
+            width: 100%;
+        }
+    
+    .spotlight .image .switch {
+        -moz-order: 2;
+        -webkit-order: 2;
+        -ms-order: 2;
+        order: 2;
+        border-radius: 0;
+        width: 40%;
+    }
+
+    .spotlight .content .normal {
+        padding: 2em 4em 0.1em 4em;
+        -moz-order: 2;
+        -webkit-order: 2;
+        -ms-order: 2;
+        order: 2;
+        max-width: 48em;
+        width: 60%;
+    }
+
+    .spotlight .content .switch {
+        padding: 2em 4em 0.1em 4em;
+        -moz-order: 1;
+        -webkit-order: 1;
+        -ms-order: 1;
+        order: 1;
+        max-width: 48em;
+        width: 60%;
+    }
+
+@media screen and (max-width: 1280px) {
+
+    .spotlight .image {
+        width: 45%;
+    }
+
+    .spotlight .content {
+        width: 55%;
+    }
+}
+
+@media screen and (max-width: 980px) {
+
+    .spotlight {
+        display: block;
+    }
+
+        .spotlight br {
+            display: none;
+        }
+
+        .spotlight .image {
+            width: 100%;
+        }
+
+        .spotlight .content {
+            padding: 4em 3em 2em 3em;
+            max-width: none;
+            text-align: center;
+            width: 100%;
+        }
+}
+
+@media screen and (max-width: 736px) {
+
+    .spotlight .content {
+        padding: 3em 2em 1em 2em;
+    }
+}
+
 .wrapper.style1 {
     padding-top: 3em;
     padding-bottom: 5em;
@@ -299,10 +393,8 @@ body.is-mobile.home #footer {
 
 /* Create two equal columns */
 .column {
-    float: left;
-    width: 50%;
-    padding: 100px;
-    height: 350px;
+    padding-left: 5em;
+    padding-right: 5em;
 }
 
 /* Clear floats after the columns */
@@ -401,7 +493,7 @@ input:checked + .slider:before {
     background: #fff;
     border: 1px solid #999;
     float: left;
-    font-size: 24px;
+    font-size: 75px;
     font-weight: bold;
     line-height: 34px;
     height: 100px;
