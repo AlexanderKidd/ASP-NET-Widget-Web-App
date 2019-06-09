@@ -49,19 +49,19 @@
             return (
                 <div>
                     <div className="board-row">
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(0)} value={this.props.squares[0]} onClick={() => this.props.onClick(0)} />
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(1)} value={this.props.squares[1]} onClick={() => this.props.onClick(1)} />
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(2)} value={this.props.squares[2]} onClick={() => this.props.onClick(2)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(0)} value={this.props.squares[0]} onClick={() => this.props.onClick(0)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(1)} value={this.props.squares[1]} onClick={() => this.props.onClick(1)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(2)} value={this.props.squares[2]} onClick={() => this.props.onClick(2)} />
                     </div>
                     <div className="board-row">
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(3)} value={this.props.squares[3]} onClick={() => this.props.onClick(3)} />
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(4)} value={this.props.squares[4]} onClick={() => this.props.onClick(4)} />
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(5)} value={this.props.squares[5]} onClick={() => this.props.onClick(5)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(3)} value={this.props.squares[3]} onClick={() => this.props.onClick(3)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(4)} value={this.props.squares[4]} onClick={() => this.props.onClick(4)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(5)} value={this.props.squares[5]} onClick={() => this.props.onClick(5)} />
                     </div>
                     <div className="board-row">
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(6)} value={this.props.squares[6]} onClick={() => this.props.onClick(6)} />
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(7)} value={this.props.squares[7]} onClick={() => this.props.onClick(7)} />
-                        <Square highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(8)} value={this.props.squares[8]} onClick={() => this.props.onClick(8)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(6)} value={this.props.squares[6]} onClick={() => this.props.onClick(6)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(7)} value={this.props.squares[7]} onClick={() => this.props.onClick(7)} />
+                        <Square disabled={this.props.disableClick} highlight={this.props.winningRow && this.props.winningRow != -1 && this.props.winningRow.includes(8)} value={this.props.squares[8]} onClick={() => this.props.onClick(8)} />
                     </div>
                 </div>
             );
@@ -126,12 +126,15 @@
 
         botMove(playerMove) {
             const squares = this.state.squares.slice();
-            let moveIndex = 0;
+            let serializedBoard = this.serializeBoard(squares.slice());
+
+            // Take the best (max) square based on states visited in past games if applicable.
+            let moveIndex = this.state.memo[serializedBoard] ? this.state.memo[serializedBoard].indexOf(Math.max(...this.state.memo[serializedBoard])) : -1;
 
             setTimeout(function() {
-                let serializedBoard = this.serializeBoard(squares.slice());
 
-                if(!(serializedBoard in this.state.memo) || (serializedBoard in this.state.memo && Math.max(...this.state.memo[serializedBoard]))) {
+                // Draw a random move if this board state hasn't existed yet or if the best square is already taken.
+                if(!(serializedBoard in this.state.memo) || squares[moveIndex] != null) {
                     if(!isAvailable(squares) || this.state.moveCount == 9) return;
 
                     // Explore a random state.
@@ -139,10 +142,6 @@
                         moveIndex = Math.floor(Math.random() * Math.floor(8));
                     }    
                     while((squares[moveIndex] != null || moveIndex == playerMove));
-                }
-                else {
-                    // Take the best (max) square based on states visited in past games.
-                    moveIndex = this.state.memo[serializedBoard].indexOf(Math.max(...this.state.memo[serializedBoard]));
                 }
 
                 this.setSquare(moveIndex);
@@ -273,10 +272,10 @@
                     </div>
                     <div className="row form-group">
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <button onClick={ ()=> this.newGame() }>New Game</button>
+                            <button className="btn btn-default" onClick={ ()=> this.newGame() }>New Game</button>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <button disabled={this.state.treatMove} onClick={ ()=> this.giveTreat() }>Give Treat 🦴</button>
+                            <button className="btn btn-default" disabled={this.state.treatMove} onClick={ ()=> this.giveTreat() }>Give Treat 🦴</button>
                         </div>
                     </div>
                 </div>

@@ -407,6 +407,9 @@ body.is-mobile.home #footer {
 .static-page-content {
     color: #4ab9e4;
 }
+    .static-page-content a {
+        color: #95e2ff;
+    }
 
 /* Set to baseline */
 .scrollVertBaseline {
