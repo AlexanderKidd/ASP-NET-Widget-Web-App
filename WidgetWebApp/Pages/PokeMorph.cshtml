@@ -6,22 +6,36 @@
 <div class="static-page-content">
     <h2>@ViewData["Title"]</h2>
 
+    <h3>Overview</h3>
     <p>
         Below is a table of the output for our Pokémon Morphology Project, a final project for ENGL-581, Intro To Natural Language Processing 2019 at RIT.
-        <br />
+        The goal was to apply 
+    </p>
+
+    <br />
+
+    <h3>Methodology</h3>
+    <p>
         For benefit of future students, we've kept the source code private. However, here are the general steps our algorithm follows
         for extracting the root words of Pokémon names:
         <ol>
-            <li>Read in the CSV data of Pokémon indices, names, element types, general categories, and the gold standard words (or human-calculated root words of the name).</li>
+            <li>Read in the CSV data of Pokémon indices, names, element types, general categories, and the gold standard words (meaning human-calculated root words of the name).</li>
             <li>Parse the Pokémon names into N-grams, from tri-grams (3-letter combos) up to the length of the Pokémon's name.</li>
             <li>Use the spaCy library's spell checker to do fuzzy lookups of actual words based on the N-grams.</li>
             <li>Use spaCy's GloVe word vector model to rank the relatedness of spell-checked words against the Pokémon's category and types.</li>
             <li>With the output probabilities, compare the top words (up to three) to the gold standards, and calculate the algorithm's accuracy.</li>
         </ol>
+    </p>
+    
+    <br />
 
-        <br />
-
-        In the future, it would be great to refine this algorithm, and perhaps generate this table from a CSV programmatically or pull from a CI build source.
+    <h3>Discussion</h3>
+    <p>
+        In the future, it would be great to refine this algorithm. There is potentially a better way to evaluate word "relatedness" when evaluating lookups with Pokémon types and categories.
+        We could also look at more outputs to see if one of the gold standard words is eventually being produced. For instance, Charmander and its evolutions did not seem to output words related to "fire" or reptile groups at all.
+        <br/><br/>
+        If we generated this table from a CSV sheet programmatically or pull from a CI build source this would help automate the project. 
+        We could even track metrics like how much closer/farther to the gold standard each build is getting.
     </p>
 
     <p>

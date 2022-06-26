@@ -33,6 +33,14 @@ body {
     }
 }
 
+@media (min-width: 768px) {
+    .navbar-nav.navbar-center {
+        position: absolute;
+        left: 50%;
+        transform: translatex(-50%);
+    }
+}
+
 /* Revised "Spectral" theme from http://html5up.net */
 
 #banner {
