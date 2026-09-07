@@ -5,7 +5,7 @@ A basic ASP.NET Core web app, featuring MVC and the shiny-new Razor Pages.
 
 ~~You can find the live version, hosted on Azure, here: [Live Widget Web App](https://widgetapp.azurewebsites.net/)~~
 
-**THIS PROJECT HAS BEEN RETIRED. NOW USES STATIC NEXT/REACT APP FOUND HERE: https://github.com/AlexanderKidd/Personal-Website**
+⚠️ **PROJECT HAS BEEN RETIRED. WEBSITE USES NEXT/REACT APP FOUND HERE: https://github.com/AlexanderKidd/Personal-Website** ⚠️
 
 ## Configuration
 It uses the following deployment flow:
